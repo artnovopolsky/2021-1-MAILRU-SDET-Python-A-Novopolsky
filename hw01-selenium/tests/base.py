@@ -8,13 +8,14 @@ PASSWORD_LOCATOR = "//input[@name='password']"
 ENTER_LOCATOR = "//div[contains(@class, 'authForm-module-button')]"
 USER_INFO_LOCATOR = "//div[contains(@class, 'right-module-rightButton') or contains(@class, 'right-module-mail')]"
 LOG_OUT_LOCATOR = "//a[@href='/logout']"
+PROFILE_LOCATOR = "//a[@href='/profile']"
 
 # Personal data
 EMAIL = 'artemnvp@rambler.ru'
 PASSWORD = '1artemnvp@rambler.ru'
 
 
-@pytest.fixture()
+@pytest.fixture
 def logged_in_page(driver):
     sign_in_button = driver.find_element_by_xpath(SIGN_IN_LOCATOR)
     sign_in_button.click()
@@ -34,13 +35,22 @@ def logged_in_page(driver):
     yield driver
 
 
-@pytest.fixture()
+@pytest.fixture
 def logged_out_page(logged_in_page):
     user_info_button = logged_in_page.find_element_by_xpath(USER_INFO_LOCATOR)
     user_info_button.click()
 
     log_out_button = logged_in_page.find_element_by_xpath(LOG_OUT_LOCATOR)
     log_out_button.click()
+
+    time.sleep(2) # ждём полную генерацию страницы
+    yield logged_in_page
+
+
+@pytest.fixture
+def contact_info_page(logged_in_page):
+    profile_button = logged_in_page.find_element_by_xpath(PROFILE_LOCATOR)
+    profile_button.click()
 
     time.sleep(2) # ждём полную генерацию страницы
     yield logged_in_page
