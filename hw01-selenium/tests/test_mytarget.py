@@ -20,19 +20,14 @@ def test_logout(driver):
 
 
 @pytest.mark.UI
-def test_edit_profile(change_profile_page):
-    """ Edits profile info several times in a row """
-
-    fio = ['ЗмейГорыныч', 'Питонов-Змей', 'Питонов Змей Горыныч']
-    phone = ['273839', '+72736373839', '27-38-39']
-    email = ['gorynych45@gm.ru', 'snake@555.ua', 'snakepythonov@gov.com']
-
-    for f, p, e in zip(fio, phone, email):
-        modified_profile = change_profile_page(f, p, e)
-
-        assert f == modified_profile.find_element(*FIO_LOCATOR).get_attribute('value') and \
-               p == modified_profile.find_element(*PHONE_LOCATOR).get_attribute('value') and \
-               e == modified_profile.find_element(*CHANGE_EMAIL_LOCATOR).get_attribute('value')
+def test_edit_profile(driver):
+    fio = 'Питонов Змей Горыныч'
+    phone = '27-38-39'
+    email = 'snakepythonov@gov.com'
+    change_profile_page(driver, fio, phone, email)
+    assert fio == driver.find_element(*FIO_LOCATOR).get_attribute('value') and \
+           phone == driver.find_element(*PHONE_LOCATOR).get_attribute('value') and \
+           email == driver.find_element(*CHANGE_EMAIL_LOCATOR).get_attribute('value')
 
 
 @pytest.mark.parametrize('locator, url', [
