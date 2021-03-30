@@ -2,7 +2,6 @@ import pytest
 
 from base import logged_in, logged_out, change_profile_page
 
-from locators import SIGN_IN_LOCATOR  # For logout test
 from locators import FIO_LOCATOR, PHONE_LOCATOR, CHANGE_EMAIL_LOCATOR  # For edit profile test
 from locators import STATISTICS_LOCATOR, PRO_LOCATOR  # For transition to page test
 
@@ -15,8 +14,9 @@ def test_login(driver):
 
 @pytest.mark.UI
 def test_logout(driver):
+    logged_in(driver)
     logged_out(driver)
-    driver.find_element(*SIGN_IN_LOCATOR)
+    assert 'Войти' in driver.page_source
 
 
 @pytest.mark.UI

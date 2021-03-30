@@ -27,17 +27,15 @@ def logged_in(driver,
     return driver
 
 
-def logged_out(driver):
-    logged_in(driver)
-
-    user_info_button = driver.find_element(*locators.USER_INFO_LOCATOR)
+def logged_out(logged_in_page):
+    user_info_button = logged_in_page.find_element(*locators.USER_INFO_LOCATOR)
     user_info_button.click()
 
-    log_out_button = WebDriverWait(driver, 20).until(EC.element_to_be_clickable(locators.LOG_OUT_LOCATOR))
+    log_out_button = WebDriverWait(logged_in_page, 20).until(EC.element_to_be_clickable(locators.LOG_OUT_LOCATOR))
     log_out_button.click()
 
     time.sleep(2)  # Waiting for page generation
-    return driver
+    return logged_in_page
 
 
 def change_profile_page(driver,
