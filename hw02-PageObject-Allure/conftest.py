@@ -12,18 +12,6 @@ def pytest_addoption(parser):
     parser.addoption('--debug_log', action='store_true')
 
 
-@pytest.fixture(scope='session')
-def config(request):
-    url = request.config.getoption('--url')
-    debug_log = request.config.getoption('--debug_log')
-    return {'url': url, 'debug_log': debug_log}
-
-
-@pytest.fixture(scope='session')
-def repo_root():
-    return os.path.abspath(os.path.join(__file__, os.pardir))
-
-
 def pytest_configure(config):
     if sys.platform.startswith('win'):
         base_test_dir = 'C:\\tests'
@@ -38,8 +26,22 @@ def pytest_configure(config):
     config.base_test_dir = base_test_dir
 
 
+@pytest.fixture(scope='session')
+def config(request):
+    url = request.config.getoption('--url')
+    debug_log = request.config.getoption('--debug_log')
+    return {'url': url, 'debug_log': debug_log}
+
+
+@pytest.fixture(scope='session')
+def repo_root():
+    return os.path.abspath(os.path.join(__file__, os.pardir))
+
+
 @pytest.fixture(scope='function')
 def test_dir(request):
+    """ Создаёт директорию под каждый тест """
+
     test_name = request._pyfuncitem.nodeid.replace('/', '_').replace(':', '_')
     test_dir = os.path.join(request.config.base_test_dir, test_name)
     os.makedirs(test_dir)
@@ -48,6 +50,8 @@ def test_dir(request):
 
 @pytest.fixture(scope='function', autouse=True)
 def logger(test_dir, config):
+    """ Добавляет в отчёт логи выполнения исходного кода """
+
     log_formatter = logging.Formatter('%(asctime)s - %(filename)-15s - %(levelname)-10s - %(message)s')
     log_file = os.path.join(test_dir, 'test.log')
     log_level = logging.DEBUG if config['debug_log'] else logging.INFO

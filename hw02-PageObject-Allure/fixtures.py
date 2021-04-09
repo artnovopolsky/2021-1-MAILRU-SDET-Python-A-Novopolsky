@@ -5,10 +5,16 @@ import allure
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 
+from pages.base_page import BasePage
+from pages.unauthorized_page import UnauthorizedPage
+from pages.authorized_page import AuthorizedPage
+from pages.campaign_page import CampaignPage
+from pages.segment_page import SegmentPage
+
 
 @pytest.fixture(scope='function')
 def driver(config):
-    manager = ChromeDriverManager(version='89.0.4389.23')
+    manager = ChromeDriverManager(version='89.0.4389.23', log_level=0)
     browser = webdriver.Chrome(executable_path=manager.install())
     url = config['url']
     browser.get(url)
@@ -21,21 +27,37 @@ def driver(config):
 
 @pytest.fixture
 def base_page(driver):
-    pass
+    return BasePage(driver=driver)
 
 
 @pytest.fixture
-def main_page(driver):
-    pass
+def unauthorized_page(driver):
+    return UnauthorizedPage(driver=driver)
 
 
 @pytest.fixture
-def search_page(driver):
-    pass
+def authorized_page(driver):
+    return AuthorizedPage(driver=driver)
+
+
+@pytest.fixture
+def campaign_page(driver):
+    return CampaignPage(driver=driver)
+
+
+@pytest.fixture
+def segment_page(driver):
+    return SegmentPage(driver=driver)
+
+
+@pytest.fixture(scope='function')
+def login(driver):
+    return UnauthorizedPage(driver).login()
 
 
 @pytest.fixture(scope='function', autouse=True)
 def ui_report(driver, request, test_dir):
+    """ Добавляет в отчёт скриншоты и логи браузера """
     failed_tests_count = request.session.testsfailed
 
     yield

@@ -8,3 +8,6 @@ pytest==6.2.2
 selenium==3.141.0
 toml==0.10.2
 urllib3==1.26.4
+pytest-xdist
+allure-pytest
+webdriver-manager
