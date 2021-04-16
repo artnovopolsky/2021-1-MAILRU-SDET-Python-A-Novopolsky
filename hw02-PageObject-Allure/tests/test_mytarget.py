@@ -22,7 +22,8 @@ class TestLoginFailure(BaseCase):
         """ Тест авторизации с невалидным e-mail. """
 
         self.unauthorized_page.login(email='korovamoloko', password='12345')
-        assert self.unauthorized_page.driver.current_url != 'https://target.my.com/dashboard'
+        alert = self.unauthorized_page.find(self.unauthorized_page.locators.INVALID_EMAIL_LOCATOR)
+        assert alert.get_attribute('textContent') == 'Введите email или телефон'
 
 
 @allure.feature('Тесты на UI')
@@ -34,10 +35,11 @@ class TestCampaignCreation(BaseCase):
         """ Тест на создание рекламной кампании. """
 
         campaign_page = self.authorized_page.go_to_campaign_page()
-        campaign_page.create_campaign()
+        campaign_name = campaign_page.create_campaign_name()
+        campaign_page.create_campaign(campaign_name)
 
-        campaign_name = campaign_page.find(campaign_page.locators.NEW_CAMPAIGN_IN_TABLE_LOCATOR).text
-        assert 'Новая кампания' in campaign_name
+        created_campaign_name = campaign_page.find(campaign_page.locators.NEW_CAMPAIGN_IN_TABLE_LOCATOR).text
+        assert created_campaign_name == campaign_name
 
 
 @allure.feature('Тесты на UI')

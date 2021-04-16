@@ -18,6 +18,7 @@ class AuthorizedPageLocators:
 class CampaignPageLocators:
     COVERAGE_LOCATOR = (By.XPATH, "//div[contains(@class, 'column-list-item') and contains(text(), 'Охват')]")
     LINK_INPUT_LOCATOR = (By.XPATH, "//input[@placeholder='Введите ссылку']")
+    CAMPAIGN_NAME_LOCATOR = (By.XPATH, "//div[contains(@class, 'input_campaign-name')]/div[@class='input__wrap']/input")
     BANNER_IMAGE_LOCATOR = (By.XPATH, "//div[@id='patterns_4']")
     UPLOAD_LOCATOR = (By.XPATH, "//input[@data-test='image_240x400']")
     CREATE_CAMPAIGN_LOCATOR = (By.XPATH, "//div[@class='button__text' and contains(text(), 'Создать кампанию')]")

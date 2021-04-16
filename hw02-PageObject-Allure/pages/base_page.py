@@ -39,8 +39,8 @@ class BasePage:
         return self.wait(timeout).until(EC.presence_of_element_located(locator))
 
     @allure.step('Отправление сообщения <{message}> в локатор {locator}')
-    def send_message(self, locator, message):
-        field = self.find(locator)
+    def send_message(self, locator, message, timeout=10):
+        field = self.wait(timeout).until(EC.visibility_of_element_located(locator))
         field.clear()
         field.send_keys(message)
         logger.info(f'Сообщение <{message}> в локатор <{locator}> отправлено...')
