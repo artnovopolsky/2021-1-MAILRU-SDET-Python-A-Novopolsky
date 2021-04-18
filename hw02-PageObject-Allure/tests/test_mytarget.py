@@ -1,6 +1,7 @@
 import pytest
 import allure
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.by import By
 from base_case import BaseCase
 from fixtures import *
 
@@ -35,11 +36,8 @@ class TestCampaignCreation(BaseCase):
         """ Тест на создание рекламной кампании. """
 
         campaign_page = self.authorized_page.go_to_campaign_page()
-        campaign_name = campaign_page.create_campaign_name()
-        campaign_page.create_campaign(campaign_name)
-
-        created_campaign_name = campaign_page.find(campaign_page.locators.NEW_CAMPAIGN_IN_TABLE_LOCATOR).text
-        assert created_campaign_name == campaign_name
+        campaign_name = campaign_page.create_campaign()
+        campaign_page.find((By.XPATH, campaign_page.locators.CAMPAIGN_IN_TABLE_LOCATOR.format(campaign_name)))
 
 
 @allure.feature('Тесты на UI')
@@ -51,26 +49,15 @@ class TestSegment(BaseCase):
         """ Тест на создание сегмента. """
 
         segment_page = self.authorized_page.go_to_segment_page()
-        segment_name = segment_page.create_segment_name()
-        segment_page.create_segment(segment_name)
-
-        creating_segment_name = segment_page.find(segment_page.locators.SEGMENT_IN_TABLE_LOCATOR).text
-        assert creating_segment_name == segment_name
+        segment_name = segment_page.create_segment()
+        segment_page.find((By.XPATH, segment_page.locators.SEGMENT_IN_TABLE_LOCATOR.format(segment_name)))
 
     @pytest.mark.UI
     def test_delete_segment(self, login):
         """ Тест на удаление сегмента. """
 
         segment_page = self.authorized_page.go_to_segment_page()
-        segment_page.create_segment(name=segment_page.create_segment_name())
-        created_segment_name = segment_page.find(segment_page.locators.SEGMENT_IN_TABLE_LOCATOR).text
-
-        segment_page.delete_segment(name=created_segment_name)
-
-        with allure.step('Поиск первого сегмента в таблице для сравнения названий с удалённым сегментом.'):
-            try:
-                existing_segment_name = segment_page.find(segment_page.locators.SEGMENT_IN_TABLE_LOCATOR).text
-            except TimeoutException:
-                assert 'С чего начать?' in segment_page.driver.page_source
-            else:
-                assert existing_segment_name != created_segment_name
+        segment_name = segment_page.create_segment()
+        segment_page.delete_segment(segment_name)
+        with pytest.raises(TimeoutException):
+            segment_page.find((By.XPATH, segment_page.locators.SEGMENT_IN_TABLE_LOCATOR.format(segment_name)), timeout=2)

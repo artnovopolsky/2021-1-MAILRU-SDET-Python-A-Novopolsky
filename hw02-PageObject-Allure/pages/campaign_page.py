@@ -22,10 +22,11 @@ class CampaignPage(BasePage):
         return self.driver.get('https://target.my.com/campaign/new')
 
     def create_campaign_name(self):
-        return self.fake.bothify(text='???-#########-???-###-????')
+        return self.fake.bothify(text='campaign-???-#########-???-###')
 
     @allure.step('Создание рекламной кампании')
-    def create_campaign(self, name):
+    def create_campaign(self):
+        name = self.create_campaign_name()
         self.go_to_creation_campaign()
         self.click(self.locators.COVERAGE_LOCATOR)
         self.send_message(self.locators.LINK_INPUT_LOCATOR, 'https://vk.com/id1')
@@ -33,4 +34,6 @@ class CampaignPage(BasePage):
         self.click(self.locators.BANNER_IMAGE_LOCATOR)
         self.upload(self.locators.UPLOAD_LOCATOR)
         self.click(self.locators.CREATE_CAMPAIGN_LOCATOR)
-        logger.info('Рекламная кампания создана...')
+        logger.info(f'Рекламная кампания {name} создана...')
+
+        return name

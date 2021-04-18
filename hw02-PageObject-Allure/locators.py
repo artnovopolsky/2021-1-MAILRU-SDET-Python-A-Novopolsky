@@ -22,7 +22,7 @@ class CampaignPageLocators:
     BANNER_IMAGE_LOCATOR = (By.XPATH, "//div[@id='patterns_4']")
     UPLOAD_LOCATOR = (By.XPATH, "//input[@data-test='image_240x400']")
     CREATE_CAMPAIGN_LOCATOR = (By.XPATH, "//div[@class='button__text' and contains(text(), 'Создать кампанию')]")
-    NEW_CAMPAIGN_IN_TABLE_LOCATOR = (By.XPATH, "//a[contains(@class, 'nameCell-module-campaignName')]")
+    CAMPAIGN_IN_TABLE_LOCATOR = "//a[contains(@class, 'nameCell-module-campaignName') and @title='{}']"
 
 
 class SegmentPageLocators:
@@ -31,7 +31,9 @@ class SegmentPageLocators:
     ADD_SEGMENT_LOCATOR = (By.XPATH, "//div[@class='button__text' and contains(text(), 'Добавить сегмент')]")
     SEGMENT_NAME_LOCATOR = (By.XPATH, "//div[contains(@class, 'input_create-segment-form')]/div/input")
     CREATE_SEGMENT_LOCATOR = (By.XPATH, "//div[@class='button__text' and contains(text(), 'Создать сегмент')]")
-    SEGMENT_IN_TABLE_LOCATOR = (By.XPATH, "//div[contains(@class, 'cells-module-nameCell')]/a")
-    ID_FIRST_SEGMENT_LOCATOR = (By.XPATH, "//div[contains(@class, 'segmentsTable-module-idCellWrap')]/input")
+    SEGMENT_IN_TABLE_LOCATOR = "//div[contains(@class, 'cells-module-nameCell')]/a[@title='{}']"
+    SEARCH_SEGMENT_LOCATOR = (By.XPATH, "//input[@placeholder='Поиск по названию или id...']")
+    CHOOSE_SEGMENT_LOCATOR = "//li[@title='{}']"
+    SEGMENT_ID_LOCATOR = (By.XPATH, "//div[contains(@class, 'segmentsTable-module-idCellWrap')]/input")
     SEGMENT_ACTIONS_LOCATOR = (By.XPATH, "//div[contains(@class, 'select-module-arrow')]")
     DELETE_SEGMENT_LOCATOR = (By.XPATH, "//li[@data-id='remove']")
