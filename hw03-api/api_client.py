@@ -1,4 +1,4 @@
-import json
+import os
 import requests
 from urllib.parse import urljoin
 
@@ -16,9 +16,10 @@ class ApiClient:
         self.session = requests.Session()
         self.csrf_token = None
 
-    def _request(self, method, location, headers=None, data=None, expected_status=200):
+    def _request(self, method, location, headers=None, data=None, json=None, files=None, expected_status=200):
+
         url = urljoin(self.base_url, location)
-        response = self.session.request(method, url, headers=headers, data=data)
+        response = self.session.request(method, url, headers=headers, data=data, json=json, files=files)
 
         if response.status_code != expected_status:
             raise ResponseStatusCodeException(f'Got {response.status_code} {response.reason} for URL "{url}"!\n'
@@ -50,6 +51,29 @@ class ApiClient:
 
         return result
 
+    def _get_banner_id(self):
+        location = '/api/v2/campaign_objective/reach/urls.json?_=1619802478801'
+        response = self._request('GET', location)
+
+        return response.json()['items'][0]['id']
+
+    def _post_upload_image(self):
+        location = '/api/v2/content/static.json'
+        file_name = 'campaign.jpg'
+        file_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'images', file_name))
+
+        headers = {
+            'X-CSRFToken': self._get_csrf_token()
+        }
+
+        files = {
+            'file': (file_name, open(file_path, 'rb'))
+        }
+
+        response = self._request('POST', location, headers=headers, files=files)
+
+        return response.json()['id']
+
     def post_campaign_create(self, name='test_campaign'):
         location = '/api/v2/campaigns.json'
 
@@ -57,27 +81,27 @@ class ApiClient:
             'X-CSRFToken': self._get_csrf_token()
         }
 
-        data = json.dumps({
+        data = {
             'name': name,
             'objective': 'reach',
             'package_id': 960,
             'banners': [{
                 'urls': {
                     'primary': {
-                        'id': 47177248
+                        'id': self._get_banner_id()
                     }
                 },
                 'textblocks': {},
                 'content': {
                     'image_240x400': {
-                        'id': 8678796
+                        'id': self._post_upload_image()
                     }
                 },
                 'name': ''}
             ]
-        })
+        }
 
-        response = self._request('POST', location, headers=headers, data=data)
+        response = self._request('POST', location, headers=headers, json=data)
         return response.json()['id']
 
     def get_campaign(self, campaign_id):
@@ -91,11 +115,11 @@ class ApiClient:
             'X-CSRFToken': self._get_csrf_token()
         }
 
-        data = json.dumps({
+        data = {
             'status': 'deleted'
-        })
+        }
 
-        self._request('POST', location, headers=headers, data=data, expected_status=204)
+        self._request('POST', location, headers=headers, json=data, expected_status=204)
 
     def post_segment_create(self, name='test_segment'):
         location = 'api/v2/remarketing/segments.json?fields=relations__object_type,' \
@@ -106,7 +130,7 @@ class ApiClient:
             'X-CSRFToken': self._get_csrf_token()
         }
 
-        data = json.dumps({
+        data = {
             "logicType": "or",
             "name": name,
             "pass_condition": 1,
@@ -118,9 +142,9 @@ class ApiClient:
                     "right": 0
                 }
             }]
-        })
+        }
 
-        response = self._request('POST', location, headers=headers, data=data)
+        response = self._request('POST', location, headers=headers, json=data)
 
         return response.json()['id']
 
