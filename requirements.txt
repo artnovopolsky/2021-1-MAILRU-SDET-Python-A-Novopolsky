@@ -5,3 +5,6 @@ allure-pytest
 webdriver-manager
 Faker
 requests
+pymysql
+sqlalchemy
+Flask
