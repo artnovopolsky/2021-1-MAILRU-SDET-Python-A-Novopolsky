@@ -10,6 +10,7 @@ services:
     networks:
       selenoid: null
     image: 'aerokube/selenoid:1.10.3'
+    container_name: 'selenoid'
     volumes:
       - '/home/artnovopolsky/.aerokube/selenoid:/etc/selenoid'
       - '/var/run/docker.sock:/var/run/docker.sock'
@@ -21,6 +22,7 @@ services:
     networks:
       selenoid: null
     image: 'percona:latest'
+    container_name: 'mysql_db'
     environment:
       MYSQL_ROOT_PASSWORD: admin
       MYSQL_DATABASE: DB_MYAPP
@@ -39,6 +41,7 @@ services:
     networks:
       selenoid: null
     image: 'vk_api:latest'
+    container_name: 'mock'
     ports:
       - '9000:9000'
     healthcheck:
@@ -50,6 +53,7 @@ services:
     networks:
       selenoid: null
     image: 'myapp'
+    container_name: 'myapp'
     volumes:
       - '/home/artnovopolsky/mailru-course/my-repos/final_project:/project'
     ports:
