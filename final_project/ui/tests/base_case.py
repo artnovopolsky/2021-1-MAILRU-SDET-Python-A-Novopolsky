@@ -15,6 +15,7 @@ class BaseCase:
         with allure.step("Первоначальная настройка для UI-тестов..."):
             self.driver = driver
             self.config = config
+
             self.base_page: BasePage = request.getfixturevalue('base_page')
             self.authorization_page: AuthorizationPage = request.getfixturevalue('authorization_page')
             self.registration_page: RegistrationPage = request.getfixturevalue('registration_page')

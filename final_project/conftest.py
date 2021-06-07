@@ -1,6 +1,7 @@
 import os
 import shutil
 import pytest
+import faker
 
 
 def pytest_addoption(parser):
@@ -33,3 +34,13 @@ def test_dir(request):
     test_dir = os.path.join(request.config.base_test_dir, test_name)
     os.makedirs(test_dir)
     return test_dir
+
+
+@pytest.fixture(scope='function')
+def fake_data():
+    fake = faker.Faker()
+    return {
+        'username': fake.user_name(),
+        'email': fake.email(),
+        'password': fake.password()
+    }
