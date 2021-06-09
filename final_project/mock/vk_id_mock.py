@@ -1,7 +1,7 @@
 import json
 from flask import Flask
 
-users = {'artnovopolsky': 12345}
+users = {}
 
 vk_id_mock = Flask(__name__)
 
@@ -19,7 +19,7 @@ def get_status():
     return 'OK', 200
 
 
-@vk_id_mock.route('/add_user/<username>')
+@vk_id_mock.route('/add_user/<username>', methods=['POST'])
 def add_user(username):
     vk_id = len(users) + 1
     users[username] = vk_id

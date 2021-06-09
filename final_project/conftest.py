@@ -6,7 +6,6 @@ import faker
 
 def pytest_addoption(parser):
     parser.addoption('--url', default='http://myapp:9999')
-    parser.addoption('--debug_log', action='store_true')
 
 
 def pytest_configure(config):
@@ -22,8 +21,7 @@ def pytest_configure(config):
 @pytest.fixture(scope='session')
 def config(request):
     url = request.config.getoption('--url')
-    debug_log = request.config.getoption('--debug_log')
-    return {'url': url, 'debug_log': debug_log}
+    return {'url': url}
 
 
 @pytest.fixture(scope='function')
@@ -38,9 +36,18 @@ def test_dir(request):
 
 @pytest.fixture(scope='function')
 def fake_data():
+    """ Генерация данных для тестов. """
     fake = faker.Faker()
+
+    while True:
+        username = fake.user_name()
+        email = fake.email()
+        password = fake.password()
+        if 5 < len(username) < 17 and 10 < len(email) < 65 and len(password) < 256:
+            break
+
     return {
-        'username': fake.user_name(),
-        'email': fake.email(),
-        'password': fake.password()
+        'username': username,
+        'email': email,
+        'password': password
     }

@@ -28,13 +28,18 @@ class RegistrationPageLocators:
     REGISTER_BUTTON = (By.XPATH, "//input[@name='submit' and @value='Register']")
     GO_TO_LOGIN_BUTTON = (By.XPATH, "//a[@href='/login']")
 
-    USERNAME_ERROR = (By.XPATH, "//div[@id='flash' and text()='Incorrect username length']")  # При вводе слишком короткого и длинного юзернейма
-    INVALID_EMAIL_ERROR = (By.XPATH, "//div[@id='flash' and text()='Invalid email address']")  # Если не дописал @ya.ru
-    INCORRECT_EMAIL_LENGTH = (By.XPATH, "//div[@id='flash' and text()='Incorrect email length']")  # Если не дописал .ru в конце
-    PASSWORD_NOT_MATCH_ERROR = (By.XPATH, "//div[@id='flash' and text()='Passwords must match']")  # Пароли должны совпадать
+    USERNAME_ERROR = (By.XPATH, "//div[@id='flash' and text()='Incorrect username length']")
+    INVALID_EMAIL_ERROR = (By.XPATH, "//div[@id='flash' and text()='Invalid email address']")
+    INCORRECT_EMAIL_LENGTH = (By.XPATH, "//div[@id='flash' and text()='Incorrect email length']")
+    PASSWORD_NOT_MATCH_ERROR = (By.XPATH, "//div[@id='flash' and text()='Passwords must match']")
+    USER_ALREADY_EXIST = (By.XPATH, "//div[@id='flash' and text()='User already exist']")
 
-    ALL_FIELD_ERROR_MESSAGE = (By.XPATH, "//div[contains(text(), ']}')]")  # При неправильном вводе более чем одного поля
-                                                                           # сообщение об ошибке некрасивое!!!
+    # Несуществующий локатор, который должен быть при некорректном вводе всех полей
+    ALL_FIELDS_INCORRECT_MESSAGE = (By.XPATH, "//div[@id='flash' and text()='All fields are incorrect']")
+    # Несуществующий локатор, который должен отображаться при вводе существующего в БД email
+    EMAIL_ALREADY_IN_USE = (By.XPATH, "//div[@id='flash' and text()='This email is already in use']")
+    # Несуществующий локатор, который должен отображаться при вводе username русскими символами
+    USERNAME_MUST_BE_IN_ENGLISH = (By.XPATH, "//div[@id='flash' and text()='Username must be in English']")
 
 
 class MainPageLocators:
@@ -54,7 +59,7 @@ class MainPageLocators:
     TCPDUMP_EXAMPLES = (By.XPATH, "//a[text()='Examples ']")
 
     LOGGED_AS = (By.XPATH, "//li[contains(text(), 'Logged as')]")
-    VK_ID = (By.XPATH, "//li[contains(text(), 'VK ID')]")
+    VK_ID = "//li[text()='VK ID: {}']"
     VK_ID_NONE = (By.XPATH, "//div[@id='login-name']/ul/li[2][text()='']")
     LOGOUT_BUTTON = (By.XPATH, "//a[@href='/logout']")
 

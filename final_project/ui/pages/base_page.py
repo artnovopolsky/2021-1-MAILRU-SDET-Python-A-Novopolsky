@@ -11,6 +11,10 @@ class SecondTabError(Exception):
     pass
 
 
+class LocatorNotFoundError(Exception):
+    pass
+
+
 class BasePage:
     locators = None
 
@@ -47,10 +51,8 @@ class BasePage:
         field.clear()
         field.send_keys(message)
 
-    @allure.step('Клик по спрятанному локатору {finish_loc}...')
+    @allure.step('Клик по спрятанному локатору {locator_hide}...')
     def click_on_hidden_element(self, locator_main, locator_hide):
-        # main = self.driver.find_element(*start_loc)
-        # hide = self.driver.find_element(*finish_loc)
         main = self.find(locator_main)
         hide = self.find(locator_hide)
         actions = ActionChains(self.driver)

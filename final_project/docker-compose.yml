@@ -45,7 +45,7 @@ services:
     ports:
       - '9000:9000'
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://0.0.0.0:9000/vk_id/artnovopolsky']
+      test: ['CMD', 'curl', '-f', 'http://0.0.0.0:9000/status']
       timeout: 2s
       retries: 15
 

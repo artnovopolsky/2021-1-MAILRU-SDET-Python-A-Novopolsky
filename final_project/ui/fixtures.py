@@ -4,7 +4,6 @@ import allure
 
 from selenium import webdriver
 
-from ui.pages.base_page import BasePage
 from ui.pages.authorization_page import AuthorizationPage
 from ui.pages.registration_page import RegistrationPage
 from ui.pages.main_page import MainPage
@@ -30,29 +29,19 @@ def driver(config):
     browser.quit()
 
 
-@pytest.fixture
-def base_page(driver):
-    return BasePage(driver=driver)
-
-
-@pytest.fixture
+@pytest.fixture(scope='function')
 def authorization_page(driver):
     return AuthorizationPage(driver=driver)
 
 
-@pytest.fixture
+@pytest.fixture(scope='function')
 def registration_page(driver):
     return RegistrationPage(driver=driver)
 
 
-@pytest.fixture
+@pytest.fixture(scope='function')
 def main_page(driver):
     return MainPage(driver=driver)
-
-
-@pytest.fixture(scope='function')
-def login(driver):
-    return AuthorizationPage(driver).login()
 
 
 @pytest.fixture(scope='function')
