@@ -37,6 +37,7 @@ def test_dir(request):
 @pytest.fixture(scope='function')
 def fake_data():
     """ Генерация данных для тестов. """
+
     fake = faker.Faker()
 
     while True:

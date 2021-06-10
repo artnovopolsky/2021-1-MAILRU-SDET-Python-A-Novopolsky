@@ -37,6 +37,8 @@ class TestRegistrationPage(BaseCase):
 
         user = MySQLBuilder().select_by_username(fake_data['username'])
         assert user.username == fake_data['username']
+        assert user.email == fake_data['email']
+        assert user.password == fake_data['password']
         assert user.access == 1
 
     def test_invalid_username(self, setup, fake_data):

@@ -154,6 +154,14 @@ class TestMainPage(BaseCase):
         """
         self.main_page.find(self.main_page.locators.PYTHON_ZEN_QUOTE)
 
+    def test_user_info(self):
+        """
+        Тест наличия информации о пользователе в правом верхнем углу страницы.
+        Ожидаемый результат: строка 'Logged as <username>'
+        """
+        user_info = self.main_page.find(self.main_page.locators.LOGGED_AS).text
+        assert user_info == f'Logged as {self.username}'
+
     def test_user_with_vk_id(self):
         """
         Тест получение VK ID пользователя.
