@@ -11,7 +11,7 @@ def pytest_addoption(parser):
 
 
 def pytest_configure(config):
-    base_test_dir = '/tmp/tests'
+    base_test_dir = '/home/artnovopolsky/tests'
     if not hasattr(config, 'workerinput'):
         if os.path.exists(base_test_dir):
             shutil.rmtree(base_test_dir)
