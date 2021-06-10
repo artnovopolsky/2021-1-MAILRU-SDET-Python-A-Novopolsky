@@ -2,6 +2,8 @@ import os
 import shutil
 import pytest
 import faker
+from mysql.builder import MySQLBuilder
+from mysql.client import MySQLClient
 
 
 def pytest_addoption(parser):
@@ -52,3 +54,15 @@ def fake_data():
         'email': email,
         'password': password
     }
+
+
+@pytest.fixture(scope='session')
+def mysql_client():
+    mysql_client = MySQLClient()
+    yield mysql_client
+    mysql_client.connection.close()
+
+
+@pytest.fixture(scope='session')
+def mysql_builder(mysql_client):
+    return MySQLBuilder(mysql_client)

@@ -2,10 +2,9 @@ import pytest
 import allure
 from selenium.common.exceptions import TimeoutException
 
+from ui.fixtures import *
 from ui.tests.base_case import BaseCase
 from ui.pages.base_page import LocatorNotFoundError
-from ui.fixtures import *
-from mysql.builder import MySQLBuilder
 
 
 @allure.feature('Тесты на UI')
@@ -17,6 +16,7 @@ class TestRegistrationPage(BaseCase):
         """ Фикстура для перехода на страницу регистрации. """
         AuthorizationPage(driver).go_to_registration_page()
 
+    @pytest.mark.UI
     def test_fields_validation(self, setup):
         """
         Тест валидации полей в форме регистрации.
@@ -25,7 +25,8 @@ class TestRegistrationPage(BaseCase):
         """
         self.registration_page.check_fields_validation()
 
-    def test_correct_registration(self, setup, fake_data):
+    @pytest.mark.UI
+    def test_correct_registration(self, setup, fake_data, mysql_client):
         """
         Позитивный тест на регистрацию.
         Проверяет наличие 'Logged as' на главной странице. Далее проверяет наличие пользователя в БД.
@@ -33,14 +34,15 @@ class TestRegistrationPage(BaseCase):
         """
         self.registration_page.register(username=fake_data['username'], email=fake_data['email'],
                                         password=fake_data['password'], repeat_password=fake_data['password'])
-        self.main_page.find(self.main_page.locators.LOGGED_AS, 2)
+        self.main_page.find(self.main_page.locators.LOGGED_AS)
 
-        user = MySQLBuilder().select_by_username(fake_data['username'])
+        user = mysql_client.select_by_username(fake_data['username'])
         assert user.username == fake_data['username']
         assert user.email == fake_data['email']
         assert user.password == fake_data['password']
         assert user.access == 1
 
+    @pytest.mark.UI
     def test_invalid_username(self, setup, fake_data):
         """
         Негативный тест на регистрацию.
@@ -51,6 +53,7 @@ class TestRegistrationPage(BaseCase):
                                         password=fake_data['password'], repeat_password=fake_data['password'])
         self.registration_page.find(self.registration_page.locators.USERNAME_ERROR, 2)
 
+    @pytest.mark.UI
     def test_incorrect_email_length(self, setup, fake_data):
         """
         Негативный тест на регистрацию.
@@ -61,6 +64,7 @@ class TestRegistrationPage(BaseCase):
                                         password=fake_data['password'], repeat_password=fake_data['password'])
         self.registration_page.find(self.registration_page.locators.INCORRECT_EMAIL_LENGTH, 2)
 
+    @pytest.mark.UI
     def test_invalid_email(self, setup, fake_data):
         """
         Негативный тест на регистрацию.
@@ -71,6 +75,7 @@ class TestRegistrationPage(BaseCase):
                                         password=fake_data['password'], repeat_password=fake_data['password'])
         self.registration_page.find(self.registration_page.locators.INVALID_EMAIL_ERROR, 2)
 
+    @pytest.mark.UI
     def test_passwords_not_match(self, setup, fake_data):
         """
         Негативный тест на регистрацию.
@@ -81,6 +86,7 @@ class TestRegistrationPage(BaseCase):
                                         password=fake_data['password'], repeat_password=fake_data['password'][::-1])
         self.registration_page.find(self.registration_page.locators.PASSWORD_NOT_MATCH_ERROR, 2)
 
+    @pytest.mark.UI
     def test_all_fields_incorrect(self, setup):
         """
         Негативный тест на регистрацию.
@@ -94,28 +100,30 @@ class TestRegistrationPage(BaseCase):
         except TimeoutException:
             raise LocatorNotFoundError('Сообщение об ошибке некорректно!')
 
-    def test_register_existent_user(self, setup, fake_data):
+    @pytest.mark.UI
+    def test_register_existent_user(self, setup, fake_data, mysql_builder):
         """
         Негативный тест на регистрацию.
         Проверяет случай, когда при регистрации указываются данные, который уже есть в БД. (все поля!)
         Ожидаемый результат: сообщение об ошибке 'User already exist'.
         """
-        MySQLBuilder().add_user(username=fake_data['username'],
-                                email=fake_data['email'],
-                                password=fake_data['password'])
+        mysql_builder.add_user(username=fake_data['username'],
+                               email=fake_data['email'],
+                               password=fake_data['password'])
         self.registration_page.register(username=fake_data['username'], email=fake_data['email'],
                                         password=fake_data['password'], repeat_password=fake_data['password'])
         self.registration_page.find(self.registration_page.locators.USER_ALREADY_EXIST, 2)
 
-    def test_register_with_existent_email(self, setup, fake_data):
+    @pytest.mark.UI
+    def test_register_with_existent_email(self, setup, fake_data, mysql_builder):
         """
         Негативный тест на регистрацию.
         Проверяет случай, когда при регистрации указывается e-mail, который уже есть в БД. (только email!)
         Ожидаемый результат: сообщение об ошибке, что пользователь с этим email уже существует.
         """
-        MySQLBuilder().add_user(username=fake_data['username'],
-                                email=fake_data['email'],
-                                password=fake_data['password'])
+        mysql_builder.add_user(username=fake_data['username'],
+                               email=fake_data['email'],
+                               password=fake_data['password'])
         self.registration_page.register(username='korovamoloko', email=fake_data['email'],
                                         password='111', repeat_password='111')
         try:
@@ -123,6 +131,7 @@ class TestRegistrationPage(BaseCase):
         except TimeoutException:
             raise LocatorNotFoundError('Сообщение об ошибке некорректно!')
 
+    @pytest.mark.UI
     def test_register_with_russian_username(self, setup, fake_data):
         """
         Негативный тест на регистрацию.
@@ -136,6 +145,7 @@ class TestRegistrationPage(BaseCase):
         except TimeoutException:
             raise LocatorNotFoundError('Сообщение об ошибке некорректно!')
 
+    @pytest.mark.UI
     def test_go_to_authorization_page(self, setup):
         """
         Тест перехода со страницы авторизации на страницу регистрации.

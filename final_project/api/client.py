@@ -46,11 +46,17 @@ class ApiClient:
             'Content-Type': 'application/x-www-form-urlencoded'
         }
 
-        data = {
-            'username': username,
-            'password': password,
-            'submit': 'Login'
-        }
+        if username and password:
+            data = {
+                'username': username,
+                'password': password,
+                'submit': 'Login'
+            }
+        elif password is None:  # Для реализации плохого запроса
+            data = {
+                'username': username,
+                'submit': 'Login'
+            }
 
         response = self._request('POST', location, headers=headers, data=data, expected_status=expected_status)
 
@@ -64,11 +70,17 @@ class ApiClient:
             'Content-Type': 'application/json'
         }
 
-        data = {
-            "username": username,
-            "password": password,
-            "email": email
-        }
+        if username and password and email:
+            data = {
+                "username": username,
+                "password": password,
+                "email": email
+            }
+        elif email is None:  # Для реализации плохого запроса
+            data = {
+                "username": username,
+                "password": password
+            }
 
         response = self._request('POST', location, headers=headers, json=data, expected_status=expected_status)
 
@@ -83,18 +95,18 @@ class ApiClient:
         return response
 
     @allure.step('Блокировка пользователя {username} через API...')
-    def get_block_user(self, username):
+    def get_block_user(self, username, expected_status=200):
         location = f'/api/block_user/{username}'
 
-        response = self._request('GET', location)
+        response = self._request('GET', location, expected_status=expected_status)
 
         return response
 
     @allure.step('Разблокировка пользователя {username} через API...')
-    def get_unblock_user(self, username):
+    def get_unblock_user(self, username, expected_status=200):
         location = f'/api/accept_user/{username}'
 
-        response = self._request('GET', location)
+        response = self._request('GET', location, expected_status=expected_status)
 
         return response
 

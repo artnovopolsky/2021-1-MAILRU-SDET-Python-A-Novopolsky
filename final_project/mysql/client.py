@@ -1,5 +1,7 @@
+import allure
 import sqlalchemy
 from sqlalchemy.orm import sessionmaker
+from mysql.models import TestUser
 
 
 class MySQLClient:
@@ -23,3 +25,13 @@ class MySQLClient:
         )
 
         return engine.connect()
+
+    @allure.step("Запрос из БД пользователя {username}...")
+    def select_by_username(self, username):
+        return self.session.query(TestUser).filter(TestUser.username == username).first()
+
+    @allure.step("Блокировка доступа для пользователя {username}...")
+    def drop_access_by_username(self, username):
+        user = self.session.query(TestUser).filter(TestUser.username == username).first()
+        user.access = 0
+        self.session.commit()
